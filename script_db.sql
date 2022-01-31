@@ -110,8 +110,6 @@ CREATE TABLE IF NOT EXISTS "router"(
     CONSTRAINT routerPK PRIMARY KEY ("id")
 );
 
-INSERT OR IGNORE INTO "router" ("id", "nome", "descricion") VALUES ("6R839DL7ZSmAbMEiVk0peLjvSuf8x2HH", "R2", "O que nos deu R tras facer o cambio a fibra óptica");
-
 CREATE TABLE IF NOT EXISTS "conexion"(
     "id"        TEXT UNIQUE NOT NULL,
     "nome"      TEXT NOT NULL,
@@ -120,17 +118,12 @@ CREATE TABLE IF NOT EXISTS "conexion"(
     CONSTRAINT conexionPK PRIMARY KEY ("id")
 );
 
-INSERT OR IGNORE INTO "conexion" ("id", "nome", "tipo", "id_router") VALUES ("h9u1M83RZthZeWa8zQDSK_egHJ4fI-Ce", "O Rochazo do Rochas", "wifi", "6R839DL7ZSmAbMEiVk0peLjvSuf8x2HH");
-INSERT OR IGNORE INTO "conexion" ("id", "nome", "tipo", "id_router") VALUES ("TQwRUgLDe7ldZ5uzJzKm0-_y1otq_nZr", "O Rochazo do Rochas", "ethernet", "6R839DL7ZSmAbMEiVk0peLjvSuf8x2HH");
-
 CREATE TABLE IF NOT EXISTS "distancia"(
     "id_conexion"        TEXT UNIQUE NOT NULL,
     "distancia"          INTEGER NOT NULL,
     CONSTRAINT tipo_conexionPK PRIMARY KEY ("id_conexion", "distancia"),
     CONSTRAINT distanciaFK1 FOREIGN KEY ("id_conexion") REFERENCES "conexion" ("id") ON UPDATE CASCADE MATCH [FULL]
 );
-
-INSERT OR IGNORE INTO "distancia" ("id_conexion", "distancia") VALUES ("TQwRUgLDe7ldZ5uzJzKm0-_y1otq_nZr", "0");
 
 CREATE TABLE IF NOT EXISTS "situacion_servidor"(
     "id"        TEXT UNIQUE NOT NULL,
