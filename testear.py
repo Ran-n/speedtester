@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/02/01 20:59:53.807311
-#+ Editado:	2022/02/01 23:30:11.919044
+#+ Editado:	2022/02/01 23:33:13.711765
 # ------------------------------------------------------------------------------
 import sqlite3
 from sqlite3 import Cursor, IntegrityError
@@ -35,7 +35,7 @@ def get_chave() -> str:
 # ------------------------------------------------------------------------------
 
 def get_estado(cur: Cursor, codigo: str, nome: str) -> str:
-    id_estado = cur.execute(f'select id from estado where codigo = "{codigo}"').fetchone()[0]
+    id_estado = cur.execute(f'select id from estado where codigo = "{codigo}"').fetchone()
 
     # se non devolve nada
     if not id_estado:
@@ -49,6 +49,8 @@ def get_estado(cur: Cursor, codigo: str, nome: str) -> str:
                 pass
             else:
                 break
+    else:
+        id_estado = id_estado[0]
 
     return id_estado
 
