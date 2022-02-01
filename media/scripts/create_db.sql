@@ -56,9 +56,6 @@ CREATE TABLE IF NOT EXISTS "operacion"(
     CONSTRAINT operacionPK PRIMARY KEY ("id")
 );
 
-INSERT OR IGNORE INTO "operacion" ("id", "nome") VALUES ("QYq8hDvAPyHurgsFel_Xnd5_VL-gCRuo", "subida");
-INSERT OR IGNORE INTO "operacion" ("id", "nome") VALUES ("p_2olz_AwACNU4XfBQ1o75w9g1vB6Dbg", "baixada");
-
 CREATE TABLE IF NOT EXISTS "tamanho"(
     "id_config"     TEXT UNIQUE NOT NULL,
     "id_operacion"  TEXT UNIQUE NOT NULL,
@@ -115,12 +112,14 @@ CREATE TABLE IF NOT EXISTS "conexion"(
     "nome"      TEXT NOT NULL,
     "tipo"      TEXT NOT NULL,
     "id_router" TEXT NOT NULL,
-    CONSTRAINT conexionPK PRIMARY KEY ("id")
+    CONSTRAINT conexionPK PRIMARY KEY ("id"),
+    CONSTRAINT conexionFK1 FOREIGN KEY ("id_router") REFERENCES "router" ("id") ON UPDATE CASCADE MATCH [FULL]
 );
 
 CREATE TABLE IF NOT EXISTS "distancia"(
-    "id_conexion"        TEXT UNIQUE NOT NULL,
-    "distancia"          INTEGER NOT NULL,
+    "id_conexion"   TEXT UNIQUE NOT NULL,
+    "distancia"     INTEGER NOT NULL,
+    "hops"          INTEGER NOT NULL,
     CONSTRAINT tipo_conexionPK PRIMARY KEY ("id_conexion", "distancia"),
     CONSTRAINT distanciaFK1 FOREIGN KEY ("id_conexion") REFERENCES "conexion" ("id") ON UPDATE CASCADE MATCH [FULL]
 );

@@ -1,2 +1,2 @@
 *.db
-*.sql2
+media/scripts/insert_db.sql
