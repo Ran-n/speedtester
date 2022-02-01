@@ -1,5 +1,5 @@
 {
     "db": "media/velocimetro.db",
-    "script_create_db": "media/scripts/create_db.sql",
-    "script_insert_db": "media/scripts/insert_db.sql"
+    "script create db": "media/scripts/create_db.sql",
+    "script insert db": "media/scripts/insert_db.sql"
 }
