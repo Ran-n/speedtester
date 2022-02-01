@@ -29,16 +29,14 @@ CREATE TABLE IF NOT EXISTS "cliente"(
 );
 
 CREATE TABLE IF NOT EXISTS "servidor"(
-    "id"            TEXT UNIQUE NOT NULL,
+    "id"            INTEGER UNIQUE NOT NULL,
     "url"           TEXT UNIQUE NOT NULL,
     "lat"           REAL NOT NULL,
     "lonx"          REAL NOT NULL,
-    "nome"          TEXT UNIQUE NOT NULL,
+    "nome"          TEXT NOT NULL,
     "sponsor"       TEXT NOT NULL,
-    "id_speedtest"  INTEGER UNIQUE NOT NULL,
-    "host"          TEXT UNIQUE NOT NULL,
+    "host"          TEXT NOT NULL,
     "distancia"     REAL NOT NULL,
-    "latencia"      REAL NOT NULL,
     "id_estado"     TEXT NOT NULL,
     CONSTRAINT servidorPK PRIMARY KEY ("id"),
     CONSTRAINT servidorFK1 FOREIGN KEY ("id_estado") REFERENCES "estado" ("id") ON UPDATE CASCADE MATCH [FULL]
@@ -140,6 +138,7 @@ CREATE TABLE IF NOT EXISTS "proba"(
     "ping"                  INTEGER NOT NULL,
     "share"                 TEXT NOT NULL,
     "id_servidor"           TEXT NOT NULL,
+    "latencia"              REAL NOT NULL,
     "id_cliente"            TEXT NOT NULL,
     "id_config"             TEXT NOT NULL,
     "id_conexion"           TEXT NOT NULL,

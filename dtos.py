@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/02/01 21:42:24.569281
-#+ Editado:	2022/02/01 21:59:37.178227
+#+ Editado:	2022/02/01 22:20:07.289917
 # ------------------------------------------------------------------------------
 from dataclasses import dataclass, field
 from secrets import token_urlsafe
@@ -17,7 +17,7 @@ def get_chave() -> str:
 
 # ------------------------------------------------------------------------------
 
-@dataclass(frozen=True)
+@dataclass()
 class Estado:
     id_: str = field(default=get_chave(), init=False, repr=False)
     codigo: str
@@ -26,7 +26,7 @@ class Estado:
     def __str__(self):
         return f'{self.nome} ({self.codigo})'
 
-@dataclass(frozen=True)
+@dataclass()
 class Servidor:
     id_: str = field(default=get_chave(), init=False, repr=False)
     url: str
@@ -37,7 +37,7 @@ class Servidor:
     id_speedtest: int
     host: str
     distancia: float
-    latencia: float
+    latencia: float = 0.0
     id_estado: str
 
     def __str__(self):
