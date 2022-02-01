@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/02/01 20:59:53.807311
-#+ Editado:	2022/02/01 23:36:45.162519
+#+ Editado:	2022/02/01 23:37:39.212636
 # ------------------------------------------------------------------------------
 import sqlite3
 from sqlite3 import Cursor, IntegrityError
@@ -44,7 +44,7 @@ def get_estado(cur: Cursor, codigo: str, nome: str) -> str:
             try:
                 id_estado = get_chave()
                 cur.execute('insert into estado ("id", "codigo", "nome") '\
-                        f'values ({id_estado}, {codigo}, {nome})')
+                        f'values ("{id_estado}", "{codigo}", "{nome}")')
             except Exception as e:
                 print(e)
                 pass
