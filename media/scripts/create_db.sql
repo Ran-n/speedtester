@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS "servidor"(
 
 CREATE TABLE IF NOT EXISTS "config"(
     "id"            TEXT UNIQUE NOT NULL,
-    "max subida"    INTEGER NOT NULL,
+    "max_subida"    INTEGER UNIQUE NOT NULL,
     CONSTRAINT configPK PRIMARY KEY ("id")
 );
 
@@ -55,44 +55,44 @@ CREATE TABLE IF NOT EXISTS "operacion"(
 );
 
 CREATE TABLE IF NOT EXISTS "tamanho"(
-    "id_config"     TEXT UNIQUE NOT NULL,
-    "id_operacion"  TEXT UNIQUE NOT NULL,
-    "valor"         INTEGER NOT NULL,
+    "id_config"     TEXT NOT NULL,
+    "id_operacion"  TEXT NOT NULL,
+    "valor"         INTEGER UNIQUE NOT NULL,
     CONSTRAINT tamanhoPK PRIMARY KEY ("id_config", "id_operacion", "valor")
     CONSTRAINT tamanhoFK1 FOREIGN KEY ("id_config") REFERENCES "config" ("id") ON UPDATE CASCADE MATCH [FULL],
     CONSTRAINT tamanhoFK2 FOREIGN KEY ("id_operacion") REFERENCES "operacion" ("id") ON UPDATE CASCADE MATCH [FULL]
 );
 
 CREATE TABLE IF NOT EXISTS "count"(
-    "id_config"     TEXT UNIQUE NOT NULL,
-    "id_operacion"  TEXT UNIQUE NOT NULL,
-    "valor"         INTEGER NOT NULL,
+    "id_config"     TEXT NOT NULL,
+    "id_operacion"  TEXT NOT NULL,
+    "valor"         INTEGER UNIQUE NOT NULL,
     CONSTRAINT countPK PRIMARY KEY ("id_config", "id_operacion", "valor")
     CONSTRAINT countFK1 FOREIGN KEY ("id_config") REFERENCES "config" ("id") ON UPDATE CASCADE MATCH [FULL],
     CONSTRAINT countFK2 FOREIGN KEY ("id_operacion") REFERENCES "operacion" ("id") ON UPDATE CASCADE MATCH [FULL]
 );
 
 CREATE TABLE IF NOT EXISTS "fio"(
-    "id_config"     TEXT UNIQUE NOT NULL,
-    "id_operacion"  TEXT UNIQUE NOT NULL,
-    "valor"         INTEGER NOT NULL,
+    "id_config"     TEXT NOT NULL,
+    "id_operacion"  TEXT NOT NULL,
+    "valor"         INTEGER UNIQUE NOT NULL,
     CONSTRAINT fioPK PRIMARY KEY ("id_config", "id_operacion", "valor"),
     CONSTRAINT fioFK1 FOREIGN KEY ("id_config") REFERENCES "config" ("id") ON UPDATE CASCADE MATCH [FULL],
     CONSTRAINT fioFK2 FOREIGN KEY ("id_operacion") REFERENCES "operacion" ("id") ON UPDATE CASCADE MATCH [FULL]
 );
 
 CREATE TABLE IF NOT EXISTS "length"(
-    "id_config"     TEXT UNIQUE NOT NULL,
-    "id_operacion"  TEXT UNIQUE NOT NULL,
-    "valor"         INTEGER NOT NULL,
+    "id_config"     TEXT NOT NULL,
+    "id_operacion"  TEXT NOT NULL,
+    "valor"         INTEGER UNIQUE NOT NULL,
     CONSTRAINT lengthPK PRIMARY KEY ("id_config", "id_operacion", "valor"),
     CONSTRAINT lengthFK1 FOREIGN KEY ("id_config") REFERENCES "config" ("id") ON UPDATE CASCADE MATCH [FULL],
     CONSTRAINT lengthFK2 FOREIGN KEY ("id_operacion") REFERENCES "operacion" ("id") ON UPDATE CASCADE MATCH [FULL]
 );
 
 CREATE TABLE IF NOT EXISTS "servidor_ignorado"(
-    "id_config"     TEXT UNIQUE NOT NULL,
-    "id_servidor"   TEXT UNIQUE NOT NULL,
+    "id_config"     TEXT NOT NULL,
+    "id_servidor"   TEXT NOT NULL,
     CONSTRAINT lengthPK PRIMARY KEY ("id_config", "id_servidor"),
     CONSTRAINT servidor_ignoradoFK1 FOREIGN KEY ("id_config") REFERENCES "config" ("id") ON UPDATE CASCADE MATCH [FULL],
     CONSTRAINT servidor_ignoradoFK2 FOREIGN KEY ("id_servidor") REFERENCES "servidor" ("id") ON UPDATE CASCADE MATCH [FULL]
@@ -122,37 +122,22 @@ CREATE TABLE IF NOT EXISTS "distancia"(
     CONSTRAINT distanciaFK1 FOREIGN KEY ("id_conexion") REFERENCES "conexion" ("id") ON UPDATE CASCADE MATCH [FULL]
 );
 
-CREATE TABLE IF NOT EXISTS "situacion_servidor"(
-    "id"        TEXT UNIQUE NOT NULL,
-    "nome"      TEXT UNIQUE NOT NULL,
-    CONSTRAINT tipo_servidorPK PRIMARY KEY ("id")
-);
-
 CREATE TABLE IF NOT EXISTS "proba"(
     "id"                    INTEGER UNIQUE NOT NULL,
     "data"                  TEXT NOT NULL,
+    "timestamp"             TEXT NOT NULL,
     "vel_baixada"           INTEGER NOT NULL,
     "bytes_recibidos"       INTEGER NOT NULL,
     "vel_subida"            INTEGER NOT NULL,
     "bytes_enviados"        INTEGER NOT NULL,
-    "ping"                  INTEGER NOT NULL,
-    "share"                 TEXT NOT NULL,
+    "ping"                  REAL NOT NULL,
+    "distancia"             REAL NOT NULL,
+    "share"                 TEXT,
     "id_servidor"           TEXT NOT NULL,
-    "latencia"              REAL NOT NULL,
     "id_cliente"            TEXT NOT NULL,
     "id_config"             TEXT NOT NULL,
-    "id_conexion"           TEXT NOT NULL,
     CONSTRAINT probaPK PRIMARY KEY ("id"),
     CONSTRAINT probaFK1 FOREIGN KEY ("id_servidor") REFERENCES "servidor" ("id") ON UPDATE CASCADE MATCH [FULL],
     CONSTRAINT probaFK2 FOREIGN KEY ("id_cliente") REFERENCES "cliente" ("id") ON UPDATE CASCADE MATCH [FULL],
-    CONSTRAINT probaFK3 FOREIGN KEY ("id_config") REFERENCES "config" ("id") ON UPDATE CASCADE MATCH [FULL],
-    CONSTRAINT probaFK4 FOREIGN KEY ("id_conexion") REFERENCES "conexion" ("id") ON UPDATE CASCADE MATCH [FULL]
-);
-
-CREATE TABLE IF NOT EXISTS "situacion_servidor-proba"(
-    "id_proba"              TEXT NOT NULL,
-    "id_situacion_servidor" TEXT NOT NULL,
-    CONSTRAINT probaPK PRIMARY KEY ("id_proba", "id_situacion_servidor"),
-    CONSTRAINT probaFK1 FOREIGN KEY ("id_proba") REFERENCES "proba" ("id") ON UPDATE CASCADE MATCH [FULL],
-    CONSTRAINT probaFK2 FOREIGN KEY ("id_situacion_servidor") REFERENCES "situacion_servidor" ("id") ON UPDATE CASCADE MATCH [FULL]
+    CONSTRAINT probaFK3 FOREIGN KEY ("id_config") REFERENCES "config" ("id") ON UPDATE CASCADE MATCH [FULL]
 );
