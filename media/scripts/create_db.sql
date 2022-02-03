@@ -122,6 +122,12 @@ CREATE TABLE IF NOT EXISTS "distancia"(
     CONSTRAINT distanciaFK1 FOREIGN KEY ("id_conexion") REFERENCES "conexion" ("id") ON UPDATE CASCADE MATCH [FULL]
 );
 
+CREATE TABLE IF NOT EXISTS "dispositivo"(
+    "id"    TEXT UNIQUE NOT NULL,
+    "nome"              TEXT UNIQUE NOT NULL,
+    CONSTRAINT tipo_conexionPK PRIMARY KEY ("id")
+);
+
 CREATE TABLE IF NOT EXISTS "proba"(
     "id"                    INTEGER UNIQUE NOT NULL,
     "data"                  TEXT NOT NULL,
@@ -133,11 +139,15 @@ CREATE TABLE IF NOT EXISTS "proba"(
     "ping"                  REAL NOT NULL,
     "distancia"             REAL NOT NULL,
     "share"                 TEXT,
-    "id_servidor"           TEXT NOT NULL,
+    "id_servidor"           INTEGER NOT NULL,
     "id_cliente"            TEXT NOT NULL,
     "id_config"             TEXT NOT NULL,
+    "id_conexion"           TEXT NOT NULL,
+    "id_dispositivo"        TEXT NOT NULL,
     CONSTRAINT probaPK PRIMARY KEY ("id"),
     CONSTRAINT probaFK1 FOREIGN KEY ("id_servidor") REFERENCES "servidor" ("id") ON UPDATE CASCADE MATCH [FULL],
     CONSTRAINT probaFK2 FOREIGN KEY ("id_cliente") REFERENCES "cliente" ("id") ON UPDATE CASCADE MATCH [FULL],
     CONSTRAINT probaFK3 FOREIGN KEY ("id_config") REFERENCES "config" ("id") ON UPDATE CASCADE MATCH [FULL]
+    CONSTRAINT probaFK4 FOREIGN KEY ("id_conexion") REFERENCES "conexion" ("id") ON UPDATE CASCADE MATCH [FULL],
+    CONSTRAINT probaFK4 FOREIGN KEY ("id_dispositivo") REFERENCES "dispositivo" ("id") ON UPDATE CASCADE MATCH [FULL]
 );

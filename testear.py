@@ -3,14 +3,14 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/02/01 20:59:53.807311
-#+ Editado:	2022/02/03 00:19:24.894551
+#+ Editado:	2022/02/03 18:37:01.414345
 # ------------------------------------------------------------------------------
 import sqlite3
 from sqlite3 import Cursor, IntegrityError
 import os
 from speedtest import Speedtest
 from secrets import token_urlsafe
-from typing import List
+from typing import List, Union
 from datetime import datetime
 
 from uteis.ficheiro import cargarFich, cargarJson
@@ -101,7 +101,7 @@ def gardar_server(cur: Cursor, s: Servidor) -> str:
                 f'"{s.id_}", "{s.url}", "{s.lat}", "{s.lonx}", "{s.nome}", '\
                 f'"{s.sponsor}", "{s.host}", "{s.distancia}", "{s.id_estado}")')
     except IntegrityError:
-        if DEBUG: print('\n*** O servidor xa estaba gardado')
+        if DEBUG_ALL: print('\n*** O servidor xa estaba gardado')
     except Exception as e:
         if DEBUG:
             print('\n*** ERRO na función gardar_server')
@@ -197,15 +197,16 @@ def gardar_config_related(cur: Cursor, taboa: str, cnf_id:str, lst_subida: List[
 
 def gardar_proba(cur: Cursor, p: Proba) -> None:
     try:
-        cur.execute('insert into proba ("id", "data", "timestamp", "vel_baixada", '\
+        cur.execute('insert into proba ("data", "timestamp", "vel_baixada", '\
                 '"bytes_recibidos", "vel_subida", "bytes_enviados", "ping", '\
-                '"distancia", "share", "id_servidor", "id_cliente", "id_config") '\
-                f'values ("{p.id_}", "a", "a", "{p.vel_baixada}", '\
+                '"distancia", "share", "id_servidor", "id_cliente", "id_config", '\
+                '"id_conexion", "id_dispositivo") '\
+                f'values ("{p.data}", "{p.timestamp}", "{p.vel_baixada}", '\
                 f'"{p.bytes_recibidos}", "{p.vel_subida}", "{p.bytes_enviados}", '\
                 f'"{p.ping}", "{p.distancia}", "{p.share}", "{p.id_servidor}", '\
-                f'"{p.id_cliente}", "{p.id_config}")')
+                f'"{p.id_cliente}", "{p.id_config}", "{p.id_conexion}", "{p.id_dispositivo}")')
     except IntegrityError:
-        if DEBUG: print('\n*** Erro de integridade na función gardar_proba')
+        if DEBUG_ALL: print('\n*** Erro de integridade na función gardar_proba')
     except Exception as e:
         if DEBUG:
             print('\n*** ERRO na función gardar_proba')
@@ -213,8 +214,38 @@ def gardar_proba(cur: Cursor, p: Proba) -> None:
             print()
         print(f'*** ERRO: {e}')
 
+def select_opcion(cur: Cursor, taboa) -> Union[str, int]:
+    while True:
+        select = cur.execute(f'select * from {taboa}')
+        cabeceiras = select.description
+        select = select.fetchall()
+
+
+        print('\n -- Selección --\n')
+        for ele in cabeceiras:
+            print(f'{ele[0]}', end='\t')
+        print('\n-----------------------------------------------------------------------------------------')
+        for index, ele in enumerate(select, 1):
+            print(f'{index}. {ele}')
+
+        seleccion = input('> Selección: ')
+        if seleccion.isdigit() and int(seleccion) <= index and int(seleccion) > 0:
+            id_opcion = select[int(seleccion)-1][0]
+            break
+        else:
+            print()
+    return id_opcion
+
 def main():
     cnf = cargarJson('.cnf')
+
+    if not os.path.isfile(cnf['db']):
+        print()
+        print('Tes que ter a táboa de operacións con unha de subida e outra de baixada')
+        print('Tes que ter a táboa de router con un polo menos')
+        print('Tes que ter a táboa de conexion con unha polo menos')
+        print('Tes que ter a táboa de distancia con unha polo menos')
+        print('Tes que ter a táboa de dispositivo con un polo menos')
 
     con = sqlite3.connect(cnf['db'])
     cur = con.cursor()
@@ -223,6 +254,10 @@ def main():
     script_db(cur, cnf['script create db'])
     # facer os inserts inicais
     script_db(cur, cnf['script insert db'])
+
+    # preguntaselle ó usuario que conexión e dispositivo está usando
+    id_conexion = select_opcion(cur, 'conexion')
+    id_dispositivo = select_opcion(cur, 'dispositivo')
 
     s = Speedtest()
 
@@ -282,23 +317,17 @@ def main():
             )
     gardar_server(cur, mellor_servidor)
 
-    print(mellor_servidor)
-
-    if DEBUG: print('\n*** Iniciando o test de baixada          ', end='\r')
+    if DEBUG: print('\n*** Iniciando o test de baixada', end='\r')
     s.download()
     if DEBUG:
-        print('*** Feito o test de baixada          ')
-        print('*** Iniciando o test de subida          ', end='\r')
+        print('*** Feito o test de baixada    ')
+        print('*** Iniciando o test de subida', end='\r')
     s.upload()
-    if DEBUG: print('*** Feito o test de subida          ')
+    if DEBUG: print('*** Feito o test de subida    \n')
 
     results = s.results.dict()
-    if results['share'] == None:
-        share = 'Non'
-    else:
-        share = 'Yes'
     proba = Proba(
-            str(datetime.now()),
+            datetime.now(),
             results['timestamp'],
             results['download'],
             results['bytes_received'],
@@ -306,14 +335,15 @@ def main():
             results['bytes_sent'],
             mellor_servidor.latencia,
             mellor_servidor.distancia,
-            share,
+            results['share'],
             mellor_servidor.id_,
             cliente.id_,
-            config.id_
+            config.id_,
+            id_conexion,
+            id_dispositivo
             )
+    # a id_conexión está posta de forma fixada polo momento
     gardar_proba(cur, proba)
-
-    print(proba)
 
     con.commit()
     con.close()

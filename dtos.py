@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 #+ Autor:  	Ran#
 #+ Creado: 	2022/02/01 21:42:24.569281
-#+ Editado:	2022/02/02 23:24:24.391549
+#+ Editado:	2022/02/03 18:36:31.211934
 # ------------------------------------------------------------------------------
 from dataclasses import dataclass, field
 from secrets import token_urlsafe
@@ -92,7 +92,6 @@ class Length:
 
 @dataclass
 class Proba:
-    id_: str = field(default=get_chave(), init=False, repr=False)
     data: str
     timestamp: str
     vel_baixada: int
@@ -102,9 +101,18 @@ class Proba:
     ping: float
     distancia: float
     share: str
-    id_servidor: str
+    id_servidor: int
     id_cliente: str
     id_config: str
+    id_conexion: str
+    id_dispositivo: str
+
+@dataclass
+class Conexion:
+    id_: str
+    nome: str
+    tipo: str
+    id_router: str
 
 # ------------------------------------------------------------------------------
 if __name__ == '__main__':
