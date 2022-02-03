@@ -2,6 +2,9 @@
     "db": "media/velocimetro.db",
     "script create db": "media/scripts/create_db.sql",
     "script insert db": "media/scripts/insert_db.sql",
-    "script insert db encrypted": "media/scripts/insert_db.gpg",
+    "fich_gpg": [
+                "media/scripts/insert_db.gpg",
+                "media/velocimetro.gpg"
+                ],
     "uid_gpg": "2C425CDA7D0ABB111EE03C307502233BB040283E"
 }
